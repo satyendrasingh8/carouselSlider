@@ -47,9 +47,9 @@ class _MyHomePageState extends State<MyHomePage> {
           options: CarouselOptions(
            disableCenter: true
           ),
-          items: list.map((item) => Container(
-            child: Center(child: Text(item.toString()),),
-          color: Colors.green,
+          items: imgList.map((item) => Container(
+            child: Center(child: Image.network(item),),
+        
           ),
           
           ).toList(),
