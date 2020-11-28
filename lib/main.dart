@@ -33,40 +33,43 @@ class _MyHomePageState extends State<MyHomePage> {
     'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
   ];
-
+int _current = 0;
   @override
   Widget build(BuildContext context) {
+  
     final List<Widget> imgListScroll = imgList
-        .map((item) => Container(
-              margin: EdgeInsets.all(5),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
-                child: Stack(
-                  children: [
-                    Container(
-                      child: Image.network(
-                        item,
-                        fit: BoxFit.cover,
+        .map(
+          (item) => Container(
+            margin: EdgeInsets.all(5),
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(6)),
+              child: Stack(
+                children: [
+                  Container(
+                    child: Image.network(
+                      item,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 10,
+                    left: 28,
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      color: Colors.black38,
+                      child: Text(
+                        'NO.${imgList.indexOf(item)}  Page',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Positioned(
-                      bottom: 10,
-                      left: 28,
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        color: Colors.black38,
-                        child: Text(
-                          'NO.${imgList.indexOf(item)}  Page',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
-            ))
+            ),
+          ),
+        )
         .toList();
 
     return Scaffold(
@@ -74,14 +77,41 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         title: Text('Carousel Demo'),
       ),
-      body: Container(
-          child: CarouselSlider(
-              options: CarouselOptions(
-                  autoPlay: true,
-                  aspectRatio: 16 / 9,
-                  enlargeCenterPage: true,
-                  scrollDirection: Axis.horizontal),
-              items: imgListScroll)),
+      body: Column(
+        children: [
+          Container(
+              child: CarouselSlider(
+                  options: CarouselOptions(
+                      autoPlay: true,
+                      aspectRatio: 16 / 9,
+                      viewportFraction: 1.0,
+                      enlargeCenterPage: true,
+                      onPageChanged: (index, reason) {
+                       setState(() {
+                          _current = index;
+                       });
+                      },
+                      scrollDirection: Axis.horizontal),
+                  items: imgListScroll)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: imgList.map((url) {
+              int index = imgList.indexOf(url);
+              return Container(
+                width: 8.0,
+                height: 8.0,
+                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _current == index
+                    ? Color.fromRGBO(0, 0, 0, 0.9)
+                    : Color.fromRGBO(0, 0, 0, 0.4),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
     );
   }
 }
